@@ -1,0 +1,329 @@
+﻿@model SocialIsolationApp.Models.ActivityViewModel
+@using System.Web.Helpers
+@using SocialIsolationApp.Enums
+@{
+    ViewData["Title"] = "Create Activity";
+}
+<head>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+    <script src="~/js//site.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="~/css//site.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    
+    <script>
+
+        $(function () {
+
+            $("#datepicker").datepicker({
+                minDate: new Date()
+            });
+            $("#timepicker").timepicker({
+                scrollbar: true,
+                startTime: '8:00'
+            });
+            $('#reviewDetails').dialog({
+                autoOpen: false,
+                width: 500,
+                modal: true,
+                resizable: false,
+
+                buttons: {
+                    "Submit": function () {
+                        $(".ui-dialog-buttonpane button:contains('Submit')").button("disable");
+                        $(".ui-dialog-buttonpane button:contains('Edit')").button("disable");
+                        //$("#isConfirm").val(true);
+                        document.getElementById("activityForm").submit();
+                        //$('#activityForm').submit();
+                    },
+                    "Edit": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+
+            $('#activityForm').submit(function (e) {
+
+                e.preventDefault();
+                debugger;
+
+                var name = $('#activityName')[0].value;
+                $('#r_name').text(name);
+                //if(isStringLengthValid(name,5,50))
+
+                var type = $('#hobby')[0];
+                var type_val = type.options[type.selectedIndex].innerText;
+                $('#r_type').text(type_val);
+
+                var desc = $('#description')[0].value;
+                $('#r_desc').text(desc);
+
+                var address = $('#streetAddress')[0].value;
+                var suburb = $('#suburb')[0].value;
+                var postcode = $('#postcode')[0].value;
+                var state = $('#state')[0];
+                var state_val = state.options[state.selectedIndex].innerText;
+                var country = $('#country')[0];
+                var country_val = country.options[country.selectedIndex].innerText;
+                var meetingpoint = '';
+                if (address != '')
+                    meetingpoint = address + ', ' + suburb + ', ' + state_val + '-' + postcode + ', ' + country_val;
+                $('#r_meetingpoint').text(meetingpoint);
+
+                var date = $('#datepicker')[0].value;
+                $('#r_date').text(date);
+
+                var time = $('#timepicker')[0].value;
+                $('#r_time').text(time);
+
+                var duration = $('#duration')[0];
+                var duration_val = duration.options[duration.selectedIndex].innerText;
+                $('#r_duration').text(duration_val);
+
+                var size = $('#groupSize')[0];
+                var size_val = size.options[size.selectedIndex].innerText;
+                $('#r_size').text(size_val);
+
+                var healthstatus = $('#physicalStrength')[0];
+                var health_val = healthstatus.options[healthstatus.selectedIndex].innerText;
+                $('#r_healthstatus').text(health_val);
+
+                $('#reviewDetails').dialog('open');
+
+            });
+
+        });
+    </script>
+</head>
+<style>
+    #blue {
+        color: #010057;
+    }
+
+    .Box {
+        margin: 0 auto;
+        width: 75%;
+        border-radius: 2%;
+        background-color: #f2f2f2;
+        padding: 3%;
+    }
+
+    table {
+        border-collapse: collapse;
+        border: none;
+        width: 100%
+    }
+
+    .button {
+        background-color: #323F75;
+        border: none;
+        color: white;
+        padding: 1% 3%;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 125%;
+        margin: 1% 3%;
+        cursor: pointer;
+        border-radius: 3%;
+    }
+
+    .calibri {
+        font-family: Calibri;
+    }
+</style>
+<body class="calibri">
+    
+    <center>
+        <h2>What would you like to do?</h2>
+    </center>
+    <div>
+        @if (ViewBag.IsError)
+        {
+            <label style="color:red">@ViewBag.Message</label>
+        }
+        else
+        {
+            <label style="color:green">@ViewBag.Message</label>
+        }
+    </div>
+    @using (Html.BeginForm("Create", "Activity", FormMethod.Post, new { id = "activityForm" }))
+    {
+        
+        <div class="Box">
+            <div>
+
+                <table>
+                    <tr>
+                        <th><label id="blue">Activity Name*:</label></th>
+                        <th><label id="blue">Choose Activity Type*:</label></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Html.TextBoxFor(m => m.activityName, new { placeholder = "Enter new activity here..", style = "width:68%;" })
+                            @Html.ValidationMessageFor(m => m.activityName)
+                        </td>
+                        <td>
+                            @Html.DropDownListFor(m => m.hobby, Model.hobbies, new { style = "width:75%; padding-top:0.8%; padding-bottom:0.8%;" })
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div>
+                <div>
+                    <label id="blue">Brief Description:</label>
+                </div>
+                <div>
+                    @Html.TextAreaFor(m => m.description, new { placeholder = "Maximum 250 characters only.", style = "width:90%;" })
+                    @Html.ValidationMessageFor(m => m.description)
+                </div>
+            </div>
+            <br/>
+            <div>
+                <label id="blue">Meeting point:</label"">
+            </div>
+            <div>
+                @Html.TextBoxFor(m => m.streetAddress, new { placeholder = "Street address", style = "width:90%" })
+                @Html.ValidationMessageFor(m => m.streetAddress)
+            </div>
+            <br/>
+            <div>
+                <table>
+                    <tr>
+                        <th><label id="blue">Suburb:</label></th>
+                        <th><label id="blue">Postcode:</label></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Html.TextBoxFor(m => m.suburb, new { placeholder = "Enter suburb here", style = "width:75%;" })
+                            @Html.ValidationMessageFor(m => m.suburb)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.postcode, new { style = "width:75%;" })
+                            @Html.ValidationMessageFor(m => m.postcode)
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div>
+                <table>
+                    <tr>
+                        <th><label id="blue">Activity Date:</label></th>
+                        <th><label id="blue">Activity Time:</label></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Html.TextBoxFor(m => m.date, new { placeholder = "dd/mm/yyyy", id = "datepicker", readOnly = true, style = "width: 75%;" })
+                            @Html.ValidationMessageFor(m => m.date)
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.time, new { placeholder = "Select", id = "timepicker", readOnly = true, style = "cursor: pointer; width: 75%;" })
+                            @Html.ValidationMessageFor(m => m.time)
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <div>
+                <div>
+                    <label id="blue">Estimated Duration:</label>
+                </div>
+                <div>
+                    <select asp-for="duration" asp-items="Html.GetEnumSelectList<Duration>()" style="width:37.5%;"></select>
+                </div>
+            </div>
+            <br/>
+            <div>
+                <div>
+                    <label id="blue">Group Size:</label>
+                </div>
+                <div>
+                    <select asp-for="groupSize" asp-items="Html.GetEnumSelectList<GroupSize>()" style="width:37.5%;"></select>
+                </div>
+            </div>
+            <br/>
+            <div>
+                <div>
+                    <label id="blue">Physical Effort Needed:</label>
+                </div>
+                <div>
+                    <select asp-for="physicalStrength" asp-items="Html.GetEnumSelectList<HealthCondition>()" style="width:37.5%;"></select>
+                </div>
+            </div>
+            <div>
+            <br />
+                <label id="blue" ; style="font-size:x-small">*: Mandatory Fields</label>
+            </div>
+        </div>
+        
+        <br />
+        <div>
+            <center>
+                <button class="button">Create</button>
+            </center>
+        </div>
+    }
+    <br />
+    <br />
+    <div id="reviewDetails" title="Review your details of activity">
+        <table>
+            <tbody>
+                <tr>
+                    <td style="width:250px">
+                        <label>Activity Name: </label>
+                        <span id="r_name"></span>
+                    </td>
+                    <td style="width:250px">
+                        <label>Activity Type: </label>
+                        <span id="r_type"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:500px" colspan="2">
+                        <label>Description: </label>
+                        <span id="r_desc"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:500px" colspan="2">
+                        <label>Meeting point: </label>
+                        <span id="r_meetingpoint"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:250px">
+                        <label>Date: </label>
+                        <span id="r_date"></span>
+                    </td>
+                    <td style="width:250px">
+                        <label>Start time: </label>
+                        <span id="r_time"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:250px">
+                        <label>Physical effort needed: </label>
+                        <span id="r_healthstatus"></span>
+                    </td>
+                    <td style="width:250px">
+                        <label>Group size: </label>
+                        <span id="r_size"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:250px">
+                        <label>Estimated duration: </label>
+                        <span id="r_duration"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
