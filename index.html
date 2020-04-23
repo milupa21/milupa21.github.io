@@ -6,13 +6,27 @@
 </head>
 
 <style> 
-#object-position-1 {
-  object-position: 400px;
+div.relative {
+  position: relative;
+  width: 1500px;
+  height: 1500px;
+  border: 1px solid #73AD21;
+} 
+
+div.absolute {
+  position: absolute;
+  top: 80px;
+  right: 0;
+  width: 100px;
+  height: 100px;
 }
 </style>
 
 <body>
   <h1>Welcome to Amity Fun!</h1>
-   <img id = "object-position-1" src="chess1.jpg" alt="guysplaingchess" width="500" height="333">
+  <div class="relative">This div element has position: relative;
+    <div class="absolute"> <img src="chess1.jpg" alt="guysplaingchess" width="500" height="333"></div>
+  </div>
+  
 </body>
 </html>
